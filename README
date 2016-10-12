@@ -1,0 +1,44 @@
+Prepare:
+1.  Install python3.5: download from https://www.python.org/downloads/windows/ 
+2.  Install pywin32: https://sourceforge.net/projects/pywin32/files/pywin32/ -> select latest build -> download the exe for python3.5
+3.  Install python modules: paramiko, openpyxl, requests
+Command: pip install xxx --proxy http://proxy-prc.intel.com:911  
+xxx: module name
+proxy can be find in https://intelpedia.intel.com/Proxy_at_Intel 
+4.  generate SSH key for Gerrit: only needed before first run
+a.  Open command line window
+b.  cd "C:\...\ yoyscript"
+c.  python generate_key.py
+(it will ask you to input your Gerrit user name and save in a file for future usage)
+d.  2 file will be generated in currect directory: rsa_key.priv (private key), rsa_key.pub(public key)
+Please copy rsa_key.pub’s content to Gerrit->Setting->SSH Public Keys. Don’t touch rsa_key.priv.
+
+Usage:
+1.  Open command line window
+2.  cd "C:\...\yoyscript"
+3.  generate lifecycle data: 
+python yoy-lifecycle.py -t lifecycle -s 2016-1-1 -e 2016-9-1 -n temp-lifecycle.xlsx 
+– get 2016 Jan to Aug lifecycle data, save in temp-lifecycle.xlsx
+lifecycle data will be write into temp.xlsx, cover existed data in sheets “IoTGPatch”, “AndrKHPatch”, “testProjPatch” and “metrics”. 
+(The sheets name are hard-coded in script, if sheet name changed, please update yoy-lifecycle.py)
+Raw data will be saved in yoy-lifecycle_raw.xlsx.
+
+4.  generate comments data: 
+1)  put last comments files in current dir, those files should be like: 
+<general_prefix>_AndrHal_common.xlsx/_AndrHal_specific.xlsx/_linux.xlsx/_kernel.xlsx
+2)  cover those files with new data: 
+python yoy-lifecycle.py -t comment -s 2016-8-1 -e 2016-9-1 -n <general_prefix>  
+– get 2016 Aug comments data, save in corresponding files. Like “–n temp-Comment” will save to:  
+   temp-Comment _AndrHal_common.xlsx/ _AndrHal_specific.xlsx/ _linux.xlsx/ _kernel.xlsx
+Raw data will be saved in yoy-comments_raw_AndrHal_common.xlsx/ _AndrHal_specific.xlsx/ _linux.xlsx/ _kernel.xlsx.
+
+5.  Tips: 
+1)  The script will open excel and write to it, don’t touch those excel windows, otherwise write may fail. Normally the excel file will be closed when write finished, but if error happened script may exit and leave them open, then just save and close them after script exit.
+2)  If error when write exc and manually copy raw data to target sheet.
+
+Others: python yoy-lifecycle.py   – to see usage
+
+Limit/Issue:
+-   Some patches comments are too much and some earilier comments missed in Gerrit, like 135648. That may cause data not match in 2 run.
+-   Sometimes SSH fail due to connection break, just wait seconds and re-run the script.
+
