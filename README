@@ -5,6 +5,7 @@ Prepare:
 Command: pip install xxx --proxy http://proxy-prc.intel.com:911  
 xxx: module name
 proxy can be find in https://intelpedia.intel.com/Proxy_at_Intel 
+Note： pip install openpyxl==2.3.5
 4.  generate SSH key for Gerrit: only needed before first run
 a.  Open command line window
 b.  cd "C:\...\ yoyscript"
